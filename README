@@ -9,7 +9,10 @@ This tree hosts Rust bindings needed to interact with PCI devices, partially cov
 * pci
 * irq
 * iomem
-* dma
+
+This branch is based on
+
+ git https://gitlab.freedesktop.org/dakr/nova.git rust/rust-device
 
 Please note that these patches
 
