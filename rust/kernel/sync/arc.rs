@@ -302,7 +302,7 @@ impl<T: ?Sized> Arc<T> {
     /// ```
     /// use kernel::sync::{Arc, UniqueArc};
     ///
-    /// let arc = Arc::try_new(42)?;
+    /// let arc = Arc::new(42, GFP_KERNEL)?;
     /// let unique_arc = arc.into_unique_or_drop();
     ///
     /// // The above conversion should succeed since refcount of `arc` is 1.
@@ -316,7 +316,7 @@ impl<T: ?Sized> Arc<T> {
     /// ```
     /// use kernel::sync::{Arc, UniqueArc};
     ///
-    /// let arc = Arc::try_new(42)?;
+    /// let arc = Arc::new(42, GFP_KERNEL)?;
     /// let another = arc.clone();
     ///
     /// let unique_arc = arc.into_unique_or_drop();

@@ -6,13 +6,15 @@
 //! [`include/linux/file.h`](srctree/include/linux/file.h)
 
 use crate::{
+    alloc::AllocError,
     bindings,
     cred::Credential,
     error::{code::*, Error, Result},
+    prelude::*,
     types::{ARef, AlwaysRefCounted, NotThreadSafe, Opaque},
 };
 use alloc::boxed::Box;
-use core::{alloc::AllocError, mem, ptr};
+use core::{mem, ptr};
 
 /// Flags associated with a [`File`].
 pub mod flags {
@@ -348,10 +350,13 @@ impl DeferredFdCloser {
     pub fn new() -> Result<Self, AllocError> {
         Ok(Self {
             // INVARIANT: The `file` pointer is null, so the type invariant does not apply.
-            inner: Box::try_new(DeferredFdCloserInner {
-                twork: mem::MaybeUninit::uninit(),
-                file: core::ptr::null_mut(),
-            })?,
+            inner: <Box<_> as BoxExt<_>>::new(
+                DeferredFdCloserInner {
+                    twork: mem::MaybeUninit::uninit(),
+                    file: core::ptr::null_mut(),
+                },
+                GFP_KERNEL,
+            )?,
         })
     }
 
