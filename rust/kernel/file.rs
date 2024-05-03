@@ -163,6 +163,21 @@ impl File {
         // SAFETY: The file is valid because the shared reference guarantees a nonzero refcount.
         unsafe { core::ptr::addr_of!((*self.0.get()).f_flags).read() }
     }
+
+    /// HACK: Access dev_t from inode associate with file.
+    pub fn dev(&self) -> u32 {
+        unsafe { core::ptr::addr_of!((*(*self.0.get()).f_inode).i_rdev).read() as _ }
+    }
+
+    /// HACK: Extract minor_id from inode associated with file.
+    pub fn minor_id(&self) -> u16 {
+        self.dev() as u16
+    }
+
+    /// HACK: Extract major_id from inode associated with file.
+    pub fn major_id(&self) -> u16 {
+        ((self.dev() | 0xFFFF0000) >> 16) as u16
+    }
 }
 
 // SAFETY: The type invariants guarantee that `File` is always ref-counted.
